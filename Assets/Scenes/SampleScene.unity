@@ -448,6 +448,12 @@ MonoBehaviour:
   scale: 1
   gridPrefab: {fileID: 981955308}
   leftBottomLocation: {x: 0, y: 0, z: 0}
+  startX: 0
+  startY: 0
+  endX: 2
+  endY: 2
+  findDistance: 0
+  path: []
 --- !u!4 &2108826318
 Transform:
   m_ObjectHideFlags: 0
