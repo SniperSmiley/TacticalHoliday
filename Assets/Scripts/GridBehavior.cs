@@ -73,7 +73,6 @@ public class GridBehavior : MonoBehaviour
         int y = endY;
         List<GameObject> tempList = new List<GameObject>();
         path.Clear();
-        print(""+gridArray[endX, endY]+gridArray[endX, endY].GetComponent<GridStat>().visited);
         if (gridArray[endX,endY]&&gridArray[endX,endY].GetComponent<GridStat>().visited>=0)
         {
             path.Add(gridArray[x, y]);
@@ -126,13 +125,13 @@ public class GridBehavior : MonoBehaviour
     }
     void TestFourDirections(int x, int y, int step)
     {
-        if (TestDirection(x, y, step, 1))
+        if (TestDirection(x, y, -1, 1))
             setVisited(x, y + 1, step);
-        if (TestDirection(x, y, step, 2))
+        if (TestDirection(x, y, -1, 2))
             setVisited(x + 1, y, step);
-        if (TestDirection(x, y, step, 3))
+        if (TestDirection(x, y, -1, 3))
             setVisited(x, y - 1, step);
-        if (TestDirection(x, y, step, 4))
+        if (TestDirection(x, y, -1, 4))
             setVisited(x - 1, y, step);
     }
     void setVisited(int x, int y, int step)
