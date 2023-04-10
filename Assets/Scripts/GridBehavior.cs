@@ -10,11 +10,8 @@ public class GridBehavior : MonoBehaviour
     public GameObject gridPrefab;
     public Vector3 leftBottomLocation = new Vector3(0,0,0);
     public GameObject[,] gridArray;
-    public int startX = 0;
-    public int startY = 0;
-    public int endX = 2;
-    public int endY = 2;
-    public bool findDistance = false;
+    public Vector2Int start = new Vector2Int(0, 0);
+    public Vector2Int end = new Vector2Int(2,2);
     public List<GameObject> path = new List<GameObject>();
     // Start is called before the first frame update
     void Awake()
@@ -29,12 +26,18 @@ public class GridBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (findDistance)
-        {
-            SetDistance();
-            SetPath();
-            findDistance = false;
-        }
+
+    }
+
+    public void findDistance()
+    {
+        SetDistance();
+        SetPath();
+    }
+
+    public Transform GetTransformFromLocation(Vector2Int location)
+    {
+        return gridArray[location.x, location.y].transform;
     }
 
     void GenerateGrid()
@@ -45,8 +48,8 @@ public class GridBehavior : MonoBehaviour
             {
                 GameObject obj = Instantiate(gridPrefab,new Vector3(leftBottomLocation.x + i * scale, leftBottomLocation.y, leftBottomLocation.z + j * scale), Quaternion.identity);
                 obj.transform.SetParent(gameObject.transform);
-                obj.GetComponent<GridStat>().x = i;
-                obj.GetComponent<GridStat>().y = j;
+                obj.GetComponent<GridStat>().location.x = i;
+                obj.GetComponent<GridStat>().location.y = j;
                 gridArray[i, j] = obj;
             }
         }
@@ -54,26 +57,26 @@ public class GridBehavior : MonoBehaviour
     void SetDistance()
     {
         InitialSetup();
-        int x = startX;
-        int y = startY;
+        int x = start.x;
+        int y = start.y;
         int[] testArray = new int[rows * columns];
         for (int step = 1; step < rows * columns; ++step)
         {
             foreach (GameObject obj in gridArray)
             {
                 if (obj && obj.GetComponent<GridStat>().visited == step - 1)
-                    TestFourDirections(obj.GetComponent<GridStat>().x, obj.GetComponent<GridStat>().y, step);
+                    TestFourDirections(obj.GetComponent<GridStat>().location.x, obj.GetComponent<GridStat>().location.y, step);
             }
         }
     }
     void SetPath()
     {
-        int step = gridArray[endX, endY].GetComponent<GridStat>().visited;
-        int x = endX;
-        int y = endY;
+        int step = gridArray[end.x, end.y].GetComponent<GridStat>().visited;
+        int x = end.x;
+        int y = end.y;
         List<GameObject> tempList = new List<GameObject>();
         path.Clear();
-        if (gridArray[endX,endY]&&gridArray[endX,endY].GetComponent<GridStat>().visited>=0)
+        if (gridArray[end.x,end.y]&&gridArray[end.x,end.y].GetComponent<GridStat>().visited>=0)
         {
             path.Add(gridArray[x, y]);
             step = gridArray[x, y].GetComponent<GridStat>().visited - 1;
@@ -93,10 +96,10 @@ public class GridBehavior : MonoBehaviour
                 tempList.Add(gridArray[x, y - 1]);
             if (TestDirection(x, y, i, 4))
                 tempList.Add(gridArray[x - 1, y]);
-            GameObject tempObj = FindClosest(gridArray[endX, endY].transform, tempList);
+            GameObject tempObj = FindClosest(gridArray[end.x, end.y].transform, tempList);
             path.Add(tempObj);
-            x = tempObj.GetComponent<GridStat>().x;
-            y = tempObj.GetComponent<GridStat>().y;
+            x = tempObj.GetComponent<GridStat>().location.x;
+            y = tempObj.GetComponent<GridStat>().location.y;
             tempList.Clear();
         }
     }
@@ -106,7 +109,7 @@ public class GridBehavior : MonoBehaviour
         {
             obj.GetComponent<GridStat>().visited = -1;
         }
-        gridArray[startX, startY].GetComponent<GridStat>().visited = 0;
+        gridArray[start.x, start.y].GetComponent<GridStat>().visited = 0;
     }
     bool TestDirection(int x, int y, int step, int direction)
     {
