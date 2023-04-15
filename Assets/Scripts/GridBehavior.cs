@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[ExecuteInEditMode]
+
 public class GridBehavior : MonoBehaviour
 {
     public int rows = 10;
@@ -16,8 +16,7 @@ public class GridBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        gridArray = new GameObject[columns, rows];
-        if (gridPrefab)
+        if (gridPrefab&&gridArray==null)
             GenerateGrid();
         else
             print("missing gridprefab, please assign");
@@ -42,6 +41,7 @@ public class GridBehavior : MonoBehaviour
 
     void GenerateGrid()
     {
+        gridArray = new GameObject[columns, rows];
         for (int i = 0; i < columns; ++i)
         {
             for (int j = 0; j < rows; ++j)
